@@ -8,12 +8,16 @@
 # Source function library.
 . /etc/init.d/functions
 
+# Source networking configuration.
+. /etc/sysconfig/network
+
 prog=/usr/bin/http-stress
 lockfile=/var/lock/subsys/$prog
 
 start() { 
     # Make some checks for requirements before continuing
-    [ -x /usr/sbin/$prog ] || exit 5
+    [ "$NETWORKING" = "no" ] && exit 1
+    [ -x $prog ] || exit 5
 
     # Start our daemon daemon
     echo -n $"Starting $prog: "
