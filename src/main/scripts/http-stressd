@@ -21,7 +21,7 @@ start() {
 
     # Start our daemon daemon
     echo -n $"Starting $prog: "
-    daemon --pidfile /var/run/${proc}.pid $prog
+    daemon --pidfile /var/run/${proc}.pid $prog -d
     RETVAL=$?
     echo
 
