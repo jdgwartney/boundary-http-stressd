@@ -52,10 +52,9 @@
 
     <!-- RPM packaging properties -->
     <rpm-top-level-dir>/opt/boundary</rpm-top-level-dir>
-    <boundary-sdk-rpm-user-name>root</boundary-sdk-rpm-user-name>
-    <boundary-sdk-rpm-group-name>root</boundary-sdk-rpm-group-name>
+    <rpm-user-name>root</rpm-user-name>
+    <rpm-group-name>root</rpm-group-name>
     <boundary-sdk-rpm-app-dir>/usr/share/besdk</boundary-sdk-rpm-app-dir>
-    <boundary-sdk-rpm-bin-dir>/usr/bin</boundary-sdk-rpm-bin-dir>
     <boundary-sdk-rpm-etc-dir>/etc</boundary-sdk-rpm-etc-dir>
     <boundary-sdk-rpm-jar-dir>/usr/share/besdk/lib</boundary-sdk-rpm-jar-dir>
     <boundary-sdk-rpm-man-dir>/usr/share/man</boundary-sdk-rpm-man-dir>
@@ -64,35 +63,6 @@
   </properties>
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>${maven-dependency-plugin-version}</version>
-	<executions>
-          <execution>
-            <id>copy</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/lib</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.4</version>
-        <configuration>
-          <descriptors>
-            <descriptor>src/main/assembly/default.xml</descriptor>
-          </descriptors>
-	</configuration>
-      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>rpm-maven-plugin</artifactId>
@@ -108,11 +78,11 @@
           </defineStatements>
           <mappings>
             <mapping>
-              <directory>${boundary-sdk-rpm-bin-dir}</directory>
+              <directory>/etc/init.d</directory>
               <directoryIncluded>false</directoryIncluded>
               <filemode>755</filemode>
-              <username>${boundary-sdk-rpm-user-name}</username>
-              <groupname>${boundary-sdk-rpm-group-name}</groupname>
+              <username>${rpm-user-name}</username>
+              <groupname>${rpm-group-name}</groupname>
               <sources>
                 <source>
                   <location>src/main/scripts</location>
@@ -123,86 +93,26 @@
               </sources>
             </mapping>
             <mapping>
-              <directory>${boundary-sdk-rpm-jar-dir}</directory>
+              <directory>/etc</directory>
               <directoryIncluded>false</directoryIncluded>
               <filemode>744</filemode>
-              <username>${boundary-sdk-rpm-user-name}</username>
-              <groupname>${boundary-sdk-rpm-group-name}</groupname>
+              <username>${rpm-user-name}</username>
+              <groupname>${rpm-group-name}</groupname>
               <sources>
                 <source>
-                 <location>target/lib</location>
+                 <location>src/main/scripts</location>
+                  <includes>
+                    <include>http-stressd.conf</include>
+                  </includes>
                 </source>
               </sources>
             </mapping>
-            <mapping>
-              <directory>${boundary-sdk-rpm-initd-dir}</directory>
-              <directoryIncluded>false</directoryIncluded>
-              <filemode>755</filemode>
-              <username>${boundary-sdk-rpm-user-name}</username>
-              <groupname>${boundary-sdk-rpm-group-name}</groupname>
-              <sources>
-                <source>
-                  <location>src/main/scripts/beventd</location>
-                </source>
-              </sources>
-            </mapping>
-<!--
-            <mapping>
-              <directory>${boundary-sdk-rpm-etc-dir}/besdk</directory>
-              <directoryIncluded>false</directoryIncluded>
-              <filemode>744</filemode>
-              <username>${boundary-sdk-rpm-user-name}</username>
-              <groupname>${boundary-sdk-rpm-group-name}</groupname>
-              <sources>
-                <source>
-		<location>src/main/scripts/beventd.conf</location>
-								</source>
-								<source>
-									<location>src/main/resources/META-INF/event-application.xml</location>
-								</source>
-								<source>
-									<location>src/main/resources</location>
-									<includes>
-										<include>syslog.status.properties</include>
-										<include>syslog.severity.properties</include>
-										<include>syslog.facility.properties</include>
-										<include>log4j.properties</include>
-									</includes>
-								</source>
-							</sources>
-						</mapping>
-						<mapping>
-							<directory>${boundary-sdk-rpm-app-dir}/mibrepository</directory>
-							<directoryIncluded>false</directoryIncluded>
-							<filemode>744</filemode>
-							<username>${boundary-sdk-rpm-user-name}</username>
-							<groupname>${boundary-sdk-rpm-group-name}</groupname>
-							<sources>
-                                				<source>
-									<location>src/main/resources/mibrepository</location>
-                                				</source>
-							</sources>
-						</mapping>
-						<mapping>
-							<directory>${boundary-sdk-rpm-app-dir}</directory>
-							<directoryIncluded>false</directoryIncluded>
-							<filemode>744</filemode>
-							<sources>
-								<source>
-									<location>target</location>
-									<includes>
-										<include>${project.name}-${project.version}.jar</include>
-									</includes>
-								</source>
-							</sources>
-						</mapping>
--->
-					</mappings>
-					<preinstallScriptlet>
-						<script>echo "installing now"</script>
-					</preinstallScriptlet>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+          </mappings>
+          <preinstallScriptlet>
+            <script>echo "installing now"</script>
+          </preinstallScriptlet>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
