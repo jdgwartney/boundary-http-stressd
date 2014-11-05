@@ -9,12 +9,12 @@ usage() {
   echo "  url - endpoint to contact"
 }
 
-typeset -r AB_CONCURRENCY=$1
-typeset -r AB_REQUESTS=$2
-typeset -r AB_URL=$3
+typeset AB_CONCURRENCY=$1
+typeset AB_REQUESTS=$2
+typeset AB_URL=$3
 typeset AB_DELAY=$4
 
-[ -r /etc/httpd-stressd.conf ] && source /etc/httpd-stressd.conf
+[ -r /etc/http-stressd.conf ] && source /etc/http-stressd.conf
 
 if [ -z "$AB_URL" ]
 then
