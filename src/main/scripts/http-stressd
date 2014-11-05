@@ -11,13 +11,13 @@
 # Source networking configuration.
 . /etc/sysconfig/network
 
-prog=/usr/bin/http-stress
+prog=http-stress
 lockfile=/var/lock/subsys/$prog
 
 start() { 
     # Make some checks for requirements before continuing
     [ "$NETWORKING" = "no" ] && exit 1
-    [ -x $prog ] || exit 5
+    [ -x /usr/bin/$prog ] || exit 5
 
     # Start our daemon daemon
     echo -n $"Starting $prog: "
