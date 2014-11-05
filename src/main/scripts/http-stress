@@ -1,49 +1,79 @@
 #!/bin/bash
 
-
 usage() {
-  echo "$(basename $0) <concurrency> <requests> <url> [delay]"
+  echo "$(basename $0) [-c concurrency] [-d] [-r requests] [-u url] [-s sleep] -v"
   echo "where:"
-  echo "  concurrency - number of connections"
-  echo "  requests - number of requests per connection"
-  echo "  url - endpoint to contact"
+  echo "  concurrency - number of connections, default 10"
+  echo "  daemon      - run in daemon mode, default 0"
+  echo "  requests    - number of requests per connection, default 10"
+  echo "  sleep       - delay between invocations, default 5"
+  echo "  url         - endpoint to contact, default http://localhost/"
 }
 
-typeset AB_CONCURRENCY=$1
-typeset AB_REQUESTS=$2
-typeset AB_URL=$3
-typeset AB_DELAY=$4
+# A POSIX variable
+OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
-[ -r /etc/http-stressd.conf ] && source /etc/http-stressd.conf
+# Initialize are argument variables
+AB_CONCURRENCY=10
+AB_DAEMON=0
+AB_REQUESTS=10
+AB_URL="http://localhost/"
+AB_SLEEP=5
+AB_VERBOSE=0
 
-if [ -z "$AB_URL" ]
-then
-  echo "URL not specified"
-  usage
-  exit 1
-fi
-
-if [ -z "$AB_CONCURRENCY" ]
-then
-  echo "Concurrency not specified"
-  usage
-  exit 1
-fi
-
-if [ -z "$AB_REQUESTS" ]
-then
-  echo "Requests not specified"
-  usage
-  exit 1
-fi
-
-if [ -z "$AB_DELAY" ]
-then
-  AB_DELAY=5
-fi
-
-while :
-do
-  ab -q -c "$AB_CONCURRENCY" -n "$AB_REQUESTS" "$AB_URL" > /dev/null 2>&1
-  sleep "$AB_DELAY"
+# Process the command line arguments
+while getopts "c:dh?r:s:u:v" opt; do
+    case "$opt" in
+    h|\?)
+        usage
+        exit 0
+        ;;
+    c)  AB_CONCURRENCY=$OPTARG
+        ;;
+    d)  AB_DAEMON=1
+        ;;
+    r)  AB_REQUESTS=$OPTARG
+        ;;
+    s)  AB_SLEEP=$OPTARG
+        ;;
+    u)  AB_URL=$OPTARG
+        ;;
+    v)  AB_VERBOSE=1
+        ;;
+    esac
 done
+
+shift $((OPTIND-1))
+
+[ "$1" = "--" ] && shift
+
+# Use the configuration script if we are running in daemon mode
+[ "$AB_DAEMON" -eq 1 ] && [ -r /etc/http-stressd.conf ] && source /etc/http-stressd.conf
+
+# Main processing function
+Run() {
+  if [ "$AB_VERBOSE" -eq 0 ]
+  then
+    CMD="ab -q -c $AB_CONCURRENCY -n $AB_REQUESTS $AB_URL"
+  else
+    CMD="ab -c $AB_CONCURRENCY -n $AB_REQUESTS $AB_URL"
+  fi
+
+  while :
+  do
+    if [ "$AB_VERBOSE" -eq 0 ]
+    then
+      $CMD 2>&1 > /dev/null
+    else
+      $CMD
+    fi
+    sleep "$AB_SLEEP"
+  done
+}
+
+if [ "$AB_DAEMON" -eq 1 ]
+then
+  Run &
+else
+  Run
+fi
