@@ -11,7 +11,7 @@
 # Source networking configuration.
 . /etc/sysconfig/myconfig
 
-prog=myprogd
+prog=/usr/bin/http-stress
 lockfile=/var/lock/subsys/$prog
 
 start() { 

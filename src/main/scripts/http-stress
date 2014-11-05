@@ -1,0 +1,49 @@
+#!/bin/bash
+
+
+usage() {
+  echo "$(basename $0) <concurrency> <requests> <url> [delay]"
+  echo "where:"
+  echo "  concurrency - number of connections"
+  echo "  requests - number of requests per connection"
+  echo "  url - endpoint to contact"
+}
+
+typeset -r AB_CONCURRENCY=$1
+typeset -r AB_REQUESTS=$2
+typeset -r AB_URL=$3
+typeset AB_DELAY=$4
+
+[ -r /etc/httpd-stressd.conf ] && source /etc/httpd-stressd.conf
+
+if [ -z "$AB_URL" ]
+then
+  echo "URL not specified"
+  usage
+  exit 1
+fi
+
+if [ -z "$AB_CONCURRENCY" ]
+then
+  echo "Concurrency not specified"
+  usage
+  exit 1
+fi
+
+if [ -z "$AB_REQUESTS" ]
+then
+  echo "Requests not specified"
+  usage
+  exit 1
+fi
+
+if [ -z "$AB_DELAY" ]
+then
+  AB_DELAY=5
+fi
+
+while :
+do
+  ab -q -c "$AB_CONCURRENCY" -n "$AB_REQUESTS" "$AB_URL" > /dev/null 2>&1
+  sleep "$AB_DELAY"
+done
