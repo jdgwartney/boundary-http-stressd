@@ -115,7 +115,7 @@
             </mapping>
           </mappings>
           <postinstallScriptlet>
-            <script>chkconfig httpd-stressd on</script>
+            <script>chkconfig http-stressd on</script>
           </postinstallScriptlet>
         </configuration>
       </plugin>
