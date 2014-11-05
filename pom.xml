@@ -42,24 +42,15 @@
     </developer>
   </developers>
   <scm>
-    <connection>scm:git:https://github.com/boundary/boundary-event-sdk.git</connection>
-    <url>https://github.com/boundary/boundary-event-sdk</url>
+    <connection>scm:git:https://github.com/jdgwartney/boundary-http-stressd.git</connection>
+    <url>https://github.com/jdgwartney/boundary-http-stressd</url>
   </scm>
   <properties>
-		<!-- Set the project encoding -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<rpm-maven-plugin-version>2.0.1</rpm-maven-plugin-version>
-
-    <!-- RPM packaging properties -->
+    <rpm-maven-plugin-version>2.0.1</rpm-maven-plugin-version>
     <rpm-top-level-dir>/opt/boundary</rpm-top-level-dir>
     <rpm-user-name>root</rpm-user-name>
     <rpm-group-name>root</rpm-group-name>
-    <boundary-sdk-rpm-app-dir>/usr/share/besdk</boundary-sdk-rpm-app-dir>
-    <boundary-sdk-rpm-etc-dir>/etc</boundary-sdk-rpm-etc-dir>
-    <boundary-sdk-rpm-jar-dir>/usr/share/besdk/lib</boundary-sdk-rpm-jar-dir>
-    <boundary-sdk-rpm-man-dir>/usr/share/man</boundary-sdk-rpm-man-dir>
-    <boundary-sdk-rpm-initd-dir>/etc/init.d</boundary-sdk-rpm-initd-dir>
-
   </properties>
   <build>
     <plugins>
@@ -110,7 +101,7 @@
             <mapping>
               <directory>/usr/bin</directory>
               <directoryIncluded>false</directoryIncluded>
-              <filemode>744</filemode>
+              <filemode>755</filemode>
               <username>${rpm-user-name}</username>
               <groupname>${rpm-group-name}</groupname>
               <sources>
@@ -123,9 +114,9 @@
               </sources>
             </mapping>
           </mappings>
-          <preinstallScriptlet>
-            <script>echo "installing now"</script>
-          </preinstallScriptlet>
+          <postinstallScriptlet>
+            <script>chkconfig httpd-stressd on</script>
+          </postinstallScriptlet>
         </configuration>
       </plugin>
     </plugins>
