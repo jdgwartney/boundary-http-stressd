@@ -107,6 +107,21 @@
                 </source>
               </sources>
             </mapping>
+            <mapping>
+              <directory>/usr/bin</directory>
+              <directoryIncluded>false</directoryIncluded>
+              <filemode>744</filemode>
+              <username>${rpm-user-name}</username>
+              <groupname>${rpm-group-name}</groupname>
+              <sources>
+                <source>
+                 <location>src/main/scripts</location>
+                  <includes>
+                    <include>http-stress</include>
+                  </includes>
+                </source>
+              </sources>
+            </mapping>
           </mappings>
           <preinstallScriptlet>
             <script>echo "installing now"</script>
