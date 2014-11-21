@@ -9,6 +9,16 @@ Install
 ```bash
 $ rpm -ivh https://github.com/jdgwartney/boundary-http-stressd/releases/download/RE-01.00.00/boundary-http-stressd-01.00.00-1.noarch.rpm
 ```
+Configuration
+-------------
+`/etc/httpd-stressd.conf`
+
+```bash
+AB_CONCURRENCY=1000
+AB_REQUESTS=1000
+AB_URL=http://elb.mycompany.com
+AB_DELAY=30
+```
 Help
 ----
 ```bash
