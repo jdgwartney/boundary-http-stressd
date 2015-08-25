@@ -1,7 +1,7 @@
 boundary-http-stressd
 =====================
 
-Daemon that hits load balancer or any other HTTP end point.
+Daemon that makes requests to a load balancer or any other HTTP end point to simulate interaction by other users.
 
 Install
 --------
