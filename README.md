@@ -1,7 +1,7 @@
 boundary-http-stressd
 =====================
 
-Daemon that hits load balancer
+Daemon that hits load balancer or any other HTTP end point.
 
 Install
 --------
